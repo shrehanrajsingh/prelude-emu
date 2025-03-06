@@ -1,0 +1,6 @@
+include_directories(../)
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+add_executable(TEXE test.cpp)
+target_link_libraries(TEXE prelude)
+add_test(TEST_EXE TEXE)
