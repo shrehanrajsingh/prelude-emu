@@ -11,5 +11,6 @@ add_library(prelude
     inst_set.hpp inst_set.cpp
     module.hpp module.cpp
     stack.hpp stack.cpp
+    register.hpp register.cpp
     prelude.hpp prelude.cpp)
 

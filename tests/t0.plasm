@@ -1,0 +1,24 @@
+; Push 5 to the top of stack
+PUSH 5
+; The stack now looks like this:
+;  ---
+; | 5 |
+;  ---
+; Push 10 to the top of stack
+PUSH 10
+; The stack now looks like this:
+;  ----
+; |  5 |
+; | 10 |
+;  ----
+; Add the two values on the stack
+; The ADD instruction pops top two 
+; values from the stack,
+; adds them together, and pushes the result
+; onto the stack
+ADD
+; The HALT instruction is necessary
+; to end the program
+; The emulator will stop as soon as it 
+; encounters a HALT instruction
+HALT

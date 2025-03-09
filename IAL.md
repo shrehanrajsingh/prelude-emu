@@ -2,12 +2,12 @@
 ## 📝 Registers
 | Register | Purpose |
 |----------|---------|
-| A | Accumulator |
-| B | Base Register |
-| C | Counter |
-| D | Data Register |
-| E | Extra Register |
-| F | Flags Register |
+| A | Register |
+| B | Register |
+| C | Register |
+| D | Register |
+| E | Register |
+| F | Register |
 
 ## 🔧 Instructions
 | Instruction | Description |
