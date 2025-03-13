@@ -1,0 +1,18 @@
+SECTION .DATA
+msg:
+DB #48       ; '0'
+DB #49       ; '1'
+DB #50       ; '2'
+DB #51       ; '3'
+DB #52       ; '4'
+DB #0        ; '\0'
+
+SECTION .TEXT
+
+MOV A, #1
+MOV B, #1
+MOV C, #5
+MOV D, msg
+
+SYSCALL
+HALT

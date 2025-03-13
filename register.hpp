@@ -35,6 +35,26 @@ public:
     id = _Id;
   }
 
+  inline char *
+  get_name ()
+  {
+    return name;
+  }
+
+  inline RegisterType
+  get_type ()
+  {
+    return type;
+  }
+
+  inline int
+  get_id ()
+  {
+    return id;
+  }
+
+  virtual void set_val (int) = 0;
+
   ~Register () {}
 };
 
@@ -60,9 +80,9 @@ public:
   }
 
   void
-  set_val (char _Val)
+  set_val (int _Val) override
   {
-    val = _Val;
+    val = static_cast<char> (_Val);
   }
 
   Register8
@@ -96,9 +116,9 @@ public:
   }
 
   void
-  set_val (short _Val)
+  set_val (int _Val) override
   {
-    val = _Val;
+    val = static_cast<short> (_Val);
   }
 
   Register16

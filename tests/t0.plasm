@@ -1,3 +1,7 @@
+; The text section stores all the code
+; to be executed.
+; "This section is marked as executable" - ChatGPT
+SECTION .TEXT
 ; Push 5 to the top of stack
 PUSH 5
 ; The stack now looks like this:

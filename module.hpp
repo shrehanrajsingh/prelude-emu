@@ -14,9 +14,12 @@ namespace pl
 class Module
 {
 private:
-  std::vector<char> program;      /* program data in chars */
+  stack<char> st;            /* program stack */
+  std::vector<char> bss;     /* bss section */
+  std::vector<char> data;    /* data section */
+  std::vector<char> program; /* program data in chars  (section text)*/
+
   short pc;                       /* program counter */
-  stack<char> st;                 /* program stack */
   std::vector<Register *> regmap; /* registers */
 
 public:
@@ -32,6 +35,30 @@ public:
 
   Module &operator= (Module &);
   Module &operator= (Module &&);
+
+  inline void
+  add_section_data (std::vector<char> &d)
+  {
+    data = d;
+  }
+
+  inline void
+  add_section_data (std::vector<char> &&d)
+  {
+    data = std::move (d);
+  }
+
+  inline void
+  add_section_bss (std::vector<char> &b)
+  {
+    bss = b;
+  }
+
+  inline void
+  add_section_bss (std::vector<char> &&b)
+  {
+    bss = std::move (b);
+  }
 
   inline std::vector<char> &
   get_prog ()
@@ -97,36 +124,14 @@ public:
   }
 
   /* register routines */
-  void
-  add_register (char *_Name, RegisterType _Type)
+  void add_register (char *, RegisterType);
+  Register *get_register (char *);
+  void add_to_register (int, int);
+
+  inline std::vector<Register *> &
+  get_regmap ()
   {
-    Register *nr = nullptr;
-
-    switch (_Type)
-      {
-      case REG_TYPE_8:
-        {
-          Register8 *n8 = new Register8 (0);
-          nr = n8;
-        }
-        break;
-
-      case REG_TYPE_16:
-        {
-          Register16 *n16 = new Register16 (0);
-          nr = n16;
-        }
-        break;
-
-      default:
-        throw "invalid_register_type";
-        break;
-      }
-
-    nr->set_name (_Name);
-    nr->set_id (regmap.size ());
-
-    regmap.push_back (nr);
+    return regmap;
   }
 
   ~Module () = default;
