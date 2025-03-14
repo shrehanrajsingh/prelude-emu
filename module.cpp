@@ -97,6 +97,54 @@ Module::exec ()
             DEBUG (std::cout << st.pop ());
           }
           break;
+        case SYSCALL:
+          {
+            Register8 *vA = static_cast<Register8 *> (get_register ("A"));
+
+            switch (vA->get_val ())
+              {
+              case 1:
+                {
+                  /* standard file operations */
+                  Register8 *vB
+                      = static_cast<Register8 *> (get_register ("B"));
+
+                  switch (vB->get_val ())
+                    {
+                    case FSTREAM_STDOUT:
+                      {
+                        /*
+                          `C` -> message length
+                          `D` -> message offset in data segment
+                        */
+                        Register8 *vC
+                            = static_cast<Register8 *> (get_register ("C"));
+
+                        Register8 *vD
+                            = static_cast<Register8 *> (get_register ("D"));
+
+                        char vc_val = vC->get_val ();
+                        char i = 0;
+
+                        while (i < vc_val)
+                          {
+                            putchar (data[i]);
+                            i++;
+                          }
+                      }
+                      break;
+
+                    default:
+                      break;
+                    }
+                }
+                break;
+
+              default:
+                break;
+              }
+          }
+          break;
 
         default:
           std::cout << i << '\n';

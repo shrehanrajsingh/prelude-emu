@@ -7,14 +7,18 @@
 #define REG_E 4
 #define REG_F 5
 
+const int SHOW_DEBUG_STATS = 0;
+
 #define TO_VEC(X) std::vector<char> (std::begin (X), std::end (X))
 
 int
 main (int argc, char const *argv[])
 {
-  const char s_data[] = { '0', '1', '2', '3', '4', 0 };
+  const char s_data[] = "Hello, World!\n";
   // const char s_text[] = { PUSH, 5, PUSH, 10, ADD, HALT };
-  const char s_text[] = { MOV, REG_A, 10, MOV, REG_B, 20, HALT };
+  const char s_text[] = { MOV,   REG_A, 1,   MOV,   REG_B, 1,       MOV,
+                          REG_C, 14,    MOV, REG_D, 0,     SYSCALL, HALT };
+
   pl::Module mod{ TO_VEC (s_text) };
 
   mod.add_section_data (TO_VEC (s_data));
@@ -28,21 +32,26 @@ main (int argc, char const *argv[])
 
   mod.exec ();
 
-  stack<char> &t = mod.get_stack ();
-  while (!t.isEmpty ())
+  if (SHOW_DEBUG_STATS)
     {
-      std::cout << (int)t.pop () << '\n';
-    }
-
-  for (pl::Register *r : mod.get_regmap ())
-    {
-      if (r->get_type () == REG_TYPE_8)
+      std::cout << "\n[stack]\n";
+      stack<char> &t = mod.get_stack ();
+      while (!t.isEmpty ())
         {
-          std::cout << (int)((pl::Register8 *)r)->get_val () << '\n';
+          std::cout << (int)t.pop () << '\n';
         }
-      else
+
+      std::cout << "\n[registers]\n";
+      for (pl::Register *r : mod.get_regmap ())
         {
-          std::cout << (int)((pl::Register16 *)r)->get_val () << '\n';
+          if (r->get_type () == REG_TYPE_8)
+            {
+              std::cout << (int)((pl::Register8 *)r)->get_val () << '\n';
+            }
+          else
+            {
+              std::cout << (int)((pl::Register16 *)r)->get_val () << '\n';
+            }
         }
     }
 

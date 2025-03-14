@@ -16,6 +16,7 @@ typedef enum
   MOV_dv = 6, /* mov to data section, a constant value */
   MOV_dr = 7, /* mov to data section, a value in a register */
 
+  SYSCALL,
   NUM_OF_INSTS
 } InstructionSet;
 

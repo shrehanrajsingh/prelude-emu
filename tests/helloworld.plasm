@@ -1,0 +1,35 @@
+    ; The data section stores all 
+    ; constants and mutable data
+SECTION .DATA
+    ; `msg` is a label that corresponds to the 
+    ; offset address of the first 'data byte' (db) of 
+    ; the message "Hello, World!\n"
+    ; This address will be passed to syscall routine
+msg:
+    ; DB -> data byte
+    ; 13 is ASCII for newline
+    ; The 0 following 13 has practically no use
+    ; in this code as we will be passing 
+    ; the message length ourselves.
+DB "Hello, World!", 13, 0
+
+    ; The text section stores the code
+SECTION .TEXT
+
+MOV A, #1   ; Pass 1 for standard file operations
+MOV B, #1   ; Pass file stream (1 for STDOUT)
+MOV C, 14   ; Pass message length (len("Hello, World!\n"))
+MOV D, msg  ; Pass message address
+
+SYSCALL     ; syscall
+HALT        ; end program execution
+
+; NOTE to future self:
+    ; To manage all types of data storage sections
+    ; like stack, heap, .bss, .data etc.
+    ; we could use stack to store arguments
+    ; for syscall routines.
+    ; Any data that needs to be processed will be
+    ; passed to stack.
+    ; Currently, it is ambiguous as to which data offset is
+    ; passed to `D` register.

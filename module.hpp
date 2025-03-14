@@ -8,6 +8,10 @@
 
 #define DEBUG(X) X
 
+/* file stream IDs for syscall (standard file operations) */
+#define FSTREAM_STDOUT 1
+#define FSTREAM_STDIN 2
+
 namespace pl
 {
 
@@ -126,6 +130,12 @@ public:
   /* register routines */
   void add_register (char *, RegisterType);
   Register *get_register (char *);
+  Register *
+  get_register (const char *_Name)
+  {
+    return get_register ((char *)_Name);
+  }
+
   void add_to_register (int, int);
 
   inline std::vector<Register *> &
