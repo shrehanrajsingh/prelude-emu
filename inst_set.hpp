@@ -3,23 +3,26 @@
 
 #include "header.hpp"
 
-#define DEFAULT_MOV_BEHAVIOUR 4 /* MOV_rv */
-
 typedef enum
 {
-  ADD = 0,
-  PUSH = 1,
-  POP = 2,
-  HALT = 3,
-  MOV_rv = 4, /* mov to register, a constant value */
-  MOV_rr = 5, /* mov to register, a value in a register */
-  MOV_dv = 6, /* mov to data section, a constant value */
-  MOV_dr = 7, /* mov to data section, a value in a register */
+  ADD,
+  POP, /* pop to register */
+  HALT,
+
+  MOV_rv, /* mov to register, a constant value */
+  MOV_rr, /* mov to register, a value in a register */
+  MOV_dv, /* mov to data section, a constant value */
+  MOV_dr, /* mov to data section, a value in a register */
+
+  PUSH_v, /* push constant to stack */
+  PUSH_r, /* push data in a register to stack */
+  PUSH_d, /* push byte in data segment to stack */
 
   SYSCALL,
   NUM_OF_INSTS
 } InstructionSet;
 
-#define MOV ((InstructionSet)DEFAULT_MOV_BEHAVIOUR)
+#define MOV ((InstructionSet)MOV_rv)
+#define PUSH ((InstructionSet)PUSH_v)
 
 #endif // HINST_SET_HPP
