@@ -34,3 +34,16 @@ A syscall requires the use of registers:
     - etc.
 - The second, third and so on, registers take in arguments
 - Almost always, the return value will be stored in register A
+
+## Status Flag Register (SF)
+1 byte long
+
+* Starting from MSB
+    * .0 = CF (carry flag)
+    * .1 = PF (parity flag)
+    * .2 = AF (Auxiliary flag)
+    * .3 = ZF (Zero flag)
+    * .4 = SF (Sign flag)
+    * .5 = OF (OVerflow flag)
+    * .6 = User definable
+    * .7 = User definable

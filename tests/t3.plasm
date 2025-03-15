@@ -1,0 +1,20 @@
+SECTION .DATA
+
+msg:
+DB "Hello, World!", 13, 0
+
+SECTION .TEXT
+
+MOV A, #10
+CMP A, #10
+SJE END
+
+MOV A, #1
+MOV B, #1
+MOV C, #14
+MOV D, msg
+
+SYSCALL
+
+END:
+HALT

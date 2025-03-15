@@ -69,6 +69,16 @@ void
 Module::exec ()
 {
   int i;
+
+  Register8 *A = static_cast<Register8 *> (get_register ("A"));
+  Register8 *B = static_cast<Register8 *> (get_register ("B"));
+  Register8 *C = static_cast<Register8 *> (get_register ("C"));
+  Register8 *D = static_cast<Register8 *> (get_register ("D"));
+  Register8 *E = static_cast<Register8 *> (get_register ("E"));
+  Register8 *F = static_cast<Register8 *> (get_register ("F"));
+
+  Register8 *SF = static_cast<Register8 *> (get_register ("SF"));
+
   while ((i = fetch ()) != HALT)
     {
       switch (i)
@@ -87,7 +97,7 @@ Module::exec ()
             st.push (a + b);
           }
           break;
-        case PUSH:
+        case PUSH_v:
           {
             st.push (fetch ());
           }
@@ -99,17 +109,12 @@ Module::exec ()
           break;
         case SYSCALL:
           {
-            Register8 *vA = static_cast<Register8 *> (get_register ("A"));
-
-            switch (vA->get_val ())
+            switch (A->get_val ())
               {
               case 1:
                 {
                   /* standard file operations */
-                  Register8 *vB
-                      = static_cast<Register8 *> (get_register ("B"));
-
-                  switch (vB->get_val ())
+                  switch (B->get_val ())
                     {
                     case FSTREAM_STDOUT:
                       {
@@ -117,13 +122,8 @@ Module::exec ()
                           `C` -> message length
                           `D` -> message offset in data segment
                         */
-                        Register8 *vC
-                            = static_cast<Register8 *> (get_register ("C"));
 
-                        Register8 *vD
-                            = static_cast<Register8 *> (get_register ("D"));
-
-                        char vc_val = vC->get_val ();
+                        const char vc_val = C->get_val ();
                         char i = 0;
 
                         while (i < vc_val)
@@ -145,9 +145,100 @@ Module::exec ()
               }
           }
           break;
+        case CMP_rv:
+          {
+            Register8 *r = static_cast<Register8 *> (regmap[fetch ()]);
+            char v = fetch ();
+            char res = r->get_val () - v;
+
+            char &sfv = SF->get_val ();
+            sfv = 0;
+
+            if (!res)
+              {
+                /* ZF = 1 */
+                sfv |= (StatusFlagBits::SF_ZF);
+              }
+            else if (res < 0)
+              {
+                /* SF != OF */
+                sfv |= (StatusFlagBits::SF_SF);
+              }
+            else
+              {
+                /* SF == OF */
+              }
+          }
+          break;
+
+        case SJE:
+          {
+            short pc_pres = get_pc ();
+
+            char n = fetch ();
+            const char sfv = SF->get_val ();
+
+            if ((sfv & StatusFlagBits::SF_ZF) != 0)
+              {
+                if (n > 0)
+                  {
+                    /*
+                      the next loop will also call fetch()
+                      so we need to jump to (n - 1)
+                      and the one jump will be made in the next
+                      cycle of while loop while fetching instruction
+                    */
+                    // while ((n--) > 1)
+                    //   fetch ();
+                    pc_pres += n;
+                  }
+                else
+                  pc_pres += (n - 1);
+
+                set_pc (pc_pres);
+              }
+          }
+          break;
+
+        case JE:
+          {
+            short pc_pres = get_pc ();
+
+            short n1 = static_cast<short> (fetch ());
+            short n2 = static_cast<short> (fetch ());
+
+            short n;
+
+            if (PL_ARCH == ARCH_LITTLE_ENDIAN)
+              n = n1 | (n2 << 8);
+            else
+              n = (n1 << 8) | n2;
+
+            const char sfv = SF->get_val ();
+
+            if ((sfv & StatusFlagBits::SF_ZF) != 0)
+              {
+                if (n > 0)
+                  {
+                    // while ((n--) > 1)
+                    //   fetch ();
+                    pc_pres += (n + 1);
+                  }
+                else
+                  {
+                    // DEBUG (std::cout << "JE does not support negative jumps.
+                    //                     "
+                    //                     "Implement it.");
+                    pc_pres += (n - 1);
+                  }
+
+                set_pc (pc_pres);
+              }
+          }
+          break;
 
         default:
-          std::cout << i << '\n';
+          DEBUG (std::cout << "Invalid instruction: " << i << '\n');
           throw "invalid_instruction";
           break;
         }

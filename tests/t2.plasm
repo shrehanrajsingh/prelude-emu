@@ -3,7 +3,7 @@ msg:
 DB "Hello, World!", 13, 0
 
 SECTION .TEXT
-MOV A, 0
+MOV A, #0
 
 L1:
 PUSH msg
@@ -11,7 +11,7 @@ PUSH A
 ADD
 POP B
 
-CMP [B], 0
+CMP [B], #0
 JE END
 
 PUSH A

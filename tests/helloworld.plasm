@@ -18,7 +18,7 @@ SECTION .TEXT
 
 MOV A, #1   ; Pass 1 for standard file operations
 MOV B, #1   ; Pass file stream (1 for STDOUT)
-MOV C, 14   ; Pass message length (len("Hello, World!\n"))
+MOV C, #14   ; Pass message length (len("Hello, World!\n"))
 MOV D, msg  ; Pass message address
 
 SYSCALL     ; syscall
